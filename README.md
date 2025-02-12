@@ -5,6 +5,9 @@
 ## Steps on how to run the Application
 
 1. Clone the repository
+
+# Note: Ensure you have lastest version of node and vite installed in your system
+
 2. Install the dependencies by running `npm install`
 3. Start the application by running `npm run dev`
 4. I basically designed my list in a card layout format
