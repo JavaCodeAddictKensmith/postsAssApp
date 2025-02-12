@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Pagination from "../components/Pagination";
+import TransitionScale from "../components/TransitionScale";
 
 const baseUrl = "https://jsonplaceholder.typicode.com";
 import { debounce } from "lodash";
@@ -43,19 +44,7 @@ function Posts() {
   });
 
   // Add post mutation
-  // const addPostMutation = useMutation({
-  //   mutationFn: async (newPost: Omit<Post, "id">) => {
-  //     const response = await axios.post<Post>(`${baseUrl}/posts`, newPost);
-  //     return { ...response.data, id: Date.now(), isLocal: true }; // Mark as locally created
-  //   },
-  //   onSuccess: (data) => {
-  //     queryClient.setQueryData<Post[]>(["get-posts"], (oldPosts = []) => [
-  //       ...oldPosts,
-  //       data,
-  //     ]);
-  //     closeModal();
-  //   },
-  // });
+
   const addPostMutation = useMutation({
     mutationFn: async (newPost: Omit<Post, "id">) => {
       const response = await axios.post<Post>(`${baseUrl}/posts`, newPost);
@@ -171,19 +160,6 @@ function Posts() {
   if (isLoading) return <div>Loading posts...</div>;
   if (isError) return <div>Oops! Something went wrong.</div>;
 
-  /*
-    padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background-color: purple;
-  color: whitesmoke;
-  position: sticky;
-  top: 0;
-
-
-  */
-
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <header className="p-[1rem] flex-col justify-between items-start bg-purple-500 text-white sticky rounded-md">
@@ -194,31 +170,6 @@ function Posts() {
       </header>
 
       {/* <div className="flex flex-col w-full  justify-center"> */}
-      {/* <div className="flex gap-2 mb-4 mt-9 flex-wrap justify-between items-center ">
-          <input
-            type="text"
-            placeholder="Search posts..."
-            className="border px-2  py-4 lg:w-[600px] border-gray-300 rounded-lg  focus:outline-none"
-            onChange={(e) => handleSearch(e.target.value)}
-          />
-          <select
-            className="border px-2  py-4  border-gray-300 rounded-lg  focus:outline-none"
-            onChange={(e) => setSortKey(e.target.value as "title" | "body")}
-          >
-            <option value="title">Sort by Title</option>
-            <option value="body">Sort by Body</option>
-          </select>
-
-          <div className=" justify-center items-center flex ">
-            {" "}
-            <button
-              className="bg-green-700  text-white px-2 py-3 rounded-md"
-              onClick={() => openModal()}
-            >
-              Add New Post
-            </button>
-          </div>
-        </div> */}
 
       <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
         {" "}
@@ -253,28 +204,6 @@ function Posts() {
             openDeleteModal={openDeleteModal}
             openModal={openModal}
           />
-
-          // <div
-          //   key={post.id}
-          //   className="flex flex-col gap-2.5 mt-5 bg-white shadow-md min-h-[200px] lg:w-[500px] py-4 px-4 rounded-md border-[0.5px] border-gray-300"
-          // >
-          //   <p className="text-lg font-bold italic">{post.title}</p>
-          //   <p>{post.body}</p>
-          //   <div className="flex gap-2">
-          //     <button
-          //       className="bg-blue-500 text-white px-3 py-1 rounded-md"
-          //       onClick={() => openModal(post)}
-          //     >
-          //       Edit
-          //     </button>
-          //     <button
-          //       className="bg-red-500 text-white px-3 py-1 rounded-md"
-          //       onClick={() => openDeleteModal(post)}
-          //     >
-          //       Delete
-          //     </button>
-          //   </div>
-          // </div>
         ))}
       </div>
 
@@ -288,76 +217,75 @@ function Posts() {
         />
       </div>
 
-      {/* <div className="flex justify-center gap-x-[8px] mt-[40px]">
-          <Pagination
-            page={page}
-            setPage={setPage}
-            totalPages={Math.ceil(posts?.length / rowsPerPage)}
-            rowsPerPage={rowsPerPage}
-            setRowsPerPage={setRowsPerPage}
-          />
-        </div> */}
-
       {isDeleteModalOpen && selectedPost && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-md w-[400px]">
-            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-            <p>Are you sure you want to delete this post?</p>
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                className="bg-gray-400 text-white px-3 py-1 rounded-md"
-                onClick={closeDeleteModal}
-              >
-                No
-              </button>
-              <button
-                className="bg-red-500 text-white px-3 py-1 rounded-md"
-                onClick={() => deletePostMutation.mutate(selectedPost.id)}
-              >
-                Yes
-              </button>
+        <TransitionScale>
+          {" "}
+          <div className="fixed top-0 left-0 w-full h-full bg-black/59 bg-opacity-50 flex items-center justify-center z-[1000]">
+            <div className="bg-white p-5 rounded-[7px] shadow-md flex flex-col items-center px-10 md:min-w-[614px] py-7">
+              <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+              <p>Are you sure you want to delete this post?</p>
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  className="bg-gray-400 text-white px-3 py-1 rounded-md"
+                  onClick={closeDeleteModal}
+                >
+                  No
+                </button>
+                <button
+                  className="bg-red-500 text-white px-3 py-1 rounded-md"
+                  onClick={() => deletePostMutation.mutate(selectedPost.id)}
+                >
+                  Yes
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </TransitionScale>
       )}
 
       {isModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-md w-[400px]">
-            <h2 className="text-xl font-bold mb-4">
-              {isEditing ? "Edit Post" : "Add New Post"}
-            </h2>
-            <input
-              type="text"
-              placeholder="Title"
-              className="w-full border p-2 mb-2"
-              value={newPost.title}
-              onChange={(e) =>
-                setNewPost({ ...newPost, title: e.target.value })
-              }
-            />
-            <textarea
-              placeholder="Body"
-              className="w-full border p-2 mb-2"
-              value={newPost.body}
-              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
-            ></textarea>
-            <div className="flex justify-end gap-2">
-              <button
-                className="bg-gray-400 text-white px-3 py-1 rounded-md"
-                onClick={closeModal}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-green-700  text-white px-3 py-1 rounded-md"
-                onClick={handleSubmit}
-              >
-                {isEditing ? "Save Changes" : "Post"}
-              </button>
+        <TransitionScale>
+          {" "}
+          <div className="fixed top-0 left-0 w-full h-full bg-black/59 bg-opacity-50 flex items-center justify-center z-[1000]">
+            <div className="bg-white p-5 rounded-[7px] shadow-md flex flex-col items-center px-10 md:min-w-[614px] py-7 gap-3.5">
+              <h2 className="text-xl font-bold mb-4">
+                {isEditing ? "Edit Post" : "Add New Post"}
+              </h2>
+              <input
+                type="text"
+                placeholder="Title"
+                className="border px-2  py-4  w-full border-gray-300 rounded-lg  focus:outline-none"
+                value={newPost.title}
+                onChange={(e) =>
+                  setNewPost({ ...newPost, title: e.target.value })
+                }
+              />
+              <textarea
+                placeholder="Body"
+                // className="w-full border p-2 mb-2 mt-6 focus:outline-0"
+                className="border px-2  py-7  w-full border-gray-300 rounded-lg  focus:outline-none"
+                value={newPost.body}
+                onChange={(e) =>
+                  setNewPost({ ...newPost, body: e.target.value })
+                }
+              ></textarea>
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  className="bg-gray-400 text-white px-3 py-1 rounded-md"
+                  onClick={closeModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-green-700  text-white px-3 py-1 rounded-md"
+                  onClick={handleSubmit}
+                >
+                  {isEditing ? "Save Changes" : "Post"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </TransitionScale>
       )}
       {/* </div> */}
 
