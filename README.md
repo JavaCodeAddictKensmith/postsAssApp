@@ -1,50 +1,16 @@
-# React + TypeScript + Vite
+# Technologies Used
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# React + TypeScript + Vite+ Tailwind CSS+ React Query + axios + motion for animations
 
-Currently, two official plugins are available:
+## Steps on how to run the Application
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+1. Clone the repository
+2. Install the dependencies by running `npm install`
+3. Start the application by running `npm run dev`
+4. I basically designed my list in a card layout format
+5. Each Card has its edit and delete button
+6. The edit button will open a modal with the details of the card for editing, user can then edit and click on save button to save the changes
+7. The delete button will pop up a modal which on click of yes to delete will delete the card from the list
+8. The application also has a search bar at the top which will filter the cards based on the value entered in the search input field.
+9. The application also has a button to add a new card, on click of which a modal will openmodal with provision to add the post.
+10. The application also has sorting functionality where one can sort either by title or body of the post
