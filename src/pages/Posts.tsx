@@ -185,15 +185,16 @@ function Posts() {
   */
 
   return (
-    <div>
-      <header className="p-[1rem] flex-col justify-between items-start bg-purple-500 text-white sticky">
-        <h2 className=" italic  font-bold  text-4xl">KENSCONSULTING BLOG</h2>
+    <div className="p-4 max-w-6xl mx-auto">
+      <header className="p-[1rem] flex-col justify-between items-start bg-purple-500 text-white sticky rounded-md">
+        <h2 className=" italic  font-bold  text-4xl">POSTS BLOG</h2>
         <p className=" italic   font-light  text-medium mt-3.5">
           View the latest posts
         </p>
       </header>
-      <div className="flex flex-col w-full items-center justify-center">
-        <div className="flex gap-2 mb-4 mt-9 flex-wrap justify-between items-center ">
+
+      {/* <div className="flex flex-col w-full  justify-center"> */}
+      {/* <div className="flex gap-2 mb-4 mt-9 flex-wrap justify-between items-center ">
           <input
             type="text"
             placeholder="Search posts..."
@@ -217,8 +218,35 @@ function Posts() {
               Add New Post
             </button>
           </div>
-        </div>
+        </div> */}
 
+      <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
+        {" "}
+        <input
+          type="text"
+          placeholder="Search posts..."
+          className="border px-2  py-4 lg:w-[600px] border-gray-300 rounded-lg  focus:outline-none"
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+        <select
+          className="border px-2  py-4  border-gray-300 rounded-lg  focus:outline-none"
+          onChange={(e) => setSortKey(e.target.value as "title" | "body")}
+        >
+          <option value="title">Sort by Title</option>
+          <option value="body">Sort by Body</option>
+        </select>
+        <div className=" justify-center items-center flex ">
+          {" "}
+          <button
+            className="bg-green-700  text-white px-2 py-3 rounded-md"
+            onClick={() => openModal()}
+          >
+            Add New Post
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {filteredPosts.map((post) => (
           <Card
             post={post}
@@ -248,8 +276,19 @@ function Posts() {
           //   </div>
           // </div>
         ))}
+      </div>
 
-        <div className="flex justify-center gap-x-[8px] mt-[40px]">
+      <div className="flex justify-center mt-6">
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={Math.ceil(posts?.length / rowsPerPage)}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+        />
+      </div>
+
+      {/* <div className="flex justify-center gap-x-[8px] mt-[40px]">
           <Pagination
             page={page}
             setPage={setPage}
@@ -257,72 +296,72 @@ function Posts() {
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
           />
+        </div> */}
+
+      {isDeleteModalOpen && selectedPost && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-5 rounded-md w-[400px]">
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p>Are you sure you want to delete this post?</p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                className="bg-gray-400 text-white px-3 py-1 rounded-md"
+                onClick={closeDeleteModal}
+              >
+                No
+              </button>
+              <button
+                className="bg-red-500 text-white px-3 py-1 rounded-md"
+                onClick={() => deletePostMutation.mutate(selectedPost.id)}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
         </div>
+      )}
 
-        {isDeleteModalOpen && selectedPost && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-5 rounded-md w-[400px]">
-              <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-              <p>Are you sure you want to delete this post?</p>
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  className="bg-gray-400 text-white px-3 py-1 rounded-md"
-                  onClick={closeDeleteModal}
-                >
-                  No
-                </button>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded-md"
-                  onClick={() => deletePostMutation.mutate(selectedPost.id)}
-                >
-                  Yes
-                </button>
-              </div>
+      {isModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-5 rounded-md w-[400px]">
+            <h2 className="text-xl font-bold mb-4">
+              {isEditing ? "Edit Post" : "Add New Post"}
+            </h2>
+            <input
+              type="text"
+              placeholder="Title"
+              className="w-full border p-2 mb-2"
+              value={newPost.title}
+              onChange={(e) =>
+                setNewPost({ ...newPost, title: e.target.value })
+              }
+            />
+            <textarea
+              placeholder="Body"
+              className="w-full border p-2 mb-2"
+              value={newPost.body}
+              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
+            ></textarea>
+            <div className="flex justify-end gap-2">
+              <button
+                className="bg-gray-400 text-white px-3 py-1 rounded-md"
+                onClick={closeModal}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-green-700  text-white px-3 py-1 rounded-md"
+                onClick={handleSubmit}
+              >
+                {isEditing ? "Save Changes" : "Post"}
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
+      {/* </div> */}
 
-        {isModalOpen && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-5 rounded-md w-[400px]">
-              <h2 className="text-xl font-bold mb-4">
-                {isEditing ? "Edit Post" : "Add New Post"}
-              </h2>
-              <input
-                type="text"
-                placeholder="Title"
-                className="w-full border p-2 mb-2"
-                value={newPost.title}
-                onChange={(e) =>
-                  setNewPost({ ...newPost, title: e.target.value })
-                }
-              />
-              <textarea
-                placeholder="Body"
-                className="w-full border p-2 mb-2"
-                value={newPost.body}
-                onChange={(e) =>
-                  setNewPost({ ...newPost, body: e.target.value })
-                }
-              ></textarea>
-              <div className="flex justify-end gap-2">
-                <button
-                  className="bg-gray-400 text-white px-3 py-1 rounded-md"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="bg-green-700  text-white px-3 py-1 rounded-md"
-                  onClick={handleSubmit}
-                >
-                  {isEditing ? "Save Changes" : "Post"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      {/* stops here */}
     </div>
   );
 }
