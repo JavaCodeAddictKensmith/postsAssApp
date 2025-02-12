@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Pagination from "../components/Pagination";
 
 const baseUrl = "https://jsonplaceholder.typicode.com";
 
@@ -38,6 +39,19 @@ function Posts() {
   });
 
   // Add post mutation
+  // const addPostMutation = useMutation({
+  //   mutationFn: async (newPost: Omit<Post, "id">) => {
+  //     const response = await axios.post<Post>(`${baseUrl}/posts`, newPost);
+  //     return { ...response.data, id: Date.now(), isLocal: true }; // Mark as locally created
+  //   },
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData<Post[]>(["get-posts"], (oldPosts = []) => [
+  //       ...oldPosts,
+  //       data,
+  //     ]);
+  //     closeModal();
+  //   },
+  // });
   const addPostMutation = useMutation({
     mutationFn: async (newPost: Omit<Post, "id">) => {
       const response = await axios.post<Post>(`${baseUrl}/posts`, newPost);
@@ -45,8 +59,8 @@ function Posts() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData<Post[]>(["get-posts"], (oldPosts = []) => [
+        data, // Prepend the new post
         ...oldPosts,
-        data,
       ]);
       closeModal();
     },
@@ -125,18 +139,26 @@ function Posts() {
     }
   };
 
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
+  const paginatedData = useMemo(() => {
+    const start = page * rowsPerPage;
+    return posts.slice(start, start + rowsPerPage);
+  }, [page, posts, rowsPerPage]);
+
   if (isLoading) return <div>Loading posts...</div>;
   if (isError) return <div>Oops! Something went wrong.</div>;
 
   return (
     <div className="flex flex-col w-full items-center justify-center">
       <button
-        className="bg-green-500 text-white p-2 rounded-md"
+        className="bg-green-700  text-white p-2 rounded-md"
         onClick={() => openModal()}
       >
         Add New Post
       </button>
-      {posts.map((post) => (
+      {paginatedData.map((post) => (
         <div
           key={post.id}
           className="flex flex-col gap-2.5 mt-5 bg-white shadow-md min-h-[200px] w-[500px] py-4 px-4 rounded-md"
@@ -159,6 +181,16 @@ function Posts() {
           </div>
         </div>
       ))}
+
+      <div className="flex justify-center gap-x-[8px] mt-[40px]">
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={Math.ceil(posts?.length / rowsPerPage)}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+        />
+      </div>
 
       {isDeleteModalOpen && selectedPost && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
@@ -212,7 +244,7 @@ function Posts() {
                 Cancel
               </button>
               <button
-                className="bg-green-500 text-white px-3 py-1 rounded-md"
+                className="bg-green-700  text-white px-3 py-1 rounded-md"
                 onClick={handleSubmit}
               >
                 {isEditing ? "Save Changes" : "Post"}

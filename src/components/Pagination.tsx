@@ -1,7 +1,6 @@
-import {
-  PAIconPaginationLeft,
-  PAIconPaginationRight,
-} from "../assets/images/svg";
+// import PAIconPaginationRight from "../assets/images/svg/carat-right.svg";
+// import PAIconPaginationLeft from "../assets/images/svg/carat-left.svg";
+
 import React from "react";
 import Button from "./Button";
 
@@ -40,22 +39,25 @@ const Pagination: React.FC<PaginationProps> = ({
           neutral
           disabled={page === 0}
           onClick={handlePrev}
-          className="pagination-btn"
+          className="   bg-green-700 p-2 rounded-lg text-white w-20"
         >
-          <PAIconPaginationLeft />
+          {"Previous"}
+          {/* <PAIconPaginationLeft /> */}
         </Button>
         <span className="px-2">{`Page ${page + 1} of ${totalPages}`}</span>
         <Button
           neutral
           disabled={page >= totalPages - 1}
           onClick={handleNext}
-          className="pagination-btn"
+          className="   bg-green-700 p-2 rounded-lg text-white  w-20"
         >
-          <PAIconPaginationRight />
+          {/* <PAIconPaginationRight /> */}
+
+          {"Next"}
         </Button>
       </div>
       <div>
-        <label htmlFor="rowsPerPage" className="mr-2 text-sm">
+        <label htmlFor="rowsPerPage" className="mx-2 text-sm">
           Rows per page:
         </label>
         <select
@@ -64,7 +66,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onChange={handleRowsPerPageChange}
           className="border rounded px-2 py-1 text-sm"
         >
-          {[10, 25, 50].map((rows) => (
+          {[10, 20, 25].map((rows) => (
             <option key={rows} value={rows}>
               {rows}
             </option>
